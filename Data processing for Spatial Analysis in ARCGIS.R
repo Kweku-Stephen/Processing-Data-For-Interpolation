@@ -35,7 +35,7 @@ if(
 ##Snapshot of Packages To Ease Reproducibility:This logs the packages and package versions
 ##used in this code
 #renv::snapshot(
-    
+
 #)
 
 #Loading datasets
@@ -45,12 +45,12 @@ system.time(
         dir(), 
         value = T
     ) %>% 
-    import_list() %>% 
+        import_list() %>% 
         lapply(
             data.frame
         )
 )
-    
+
 #system.time(
 #    data <- grep("^[A-Za-z](.*)xlsx", dir(), value = T) %>% 
 #    lapply(
@@ -75,30 +75,30 @@ proc <- function(station = ""){
                 "^([Dd][Aa][Tt][Ee]|[Yy][Ee][Aa][Rr])", 
                 names(data),
                 value = T
-                )]
-            ) != "Date"
+            )]
+        ) != "Date"
         ,
-           
-           {#Printing date conversion message
-               message("Converting/Creating Date Class....")
-               
-               #Converting to Date
-               data[, grep("^([Dd][Aa][Tt][Ee]|[Yy][Ee][Aa][Rr])",names(data), value = T)] <- as.Date(
-                   data[ ,grep(
-                       "^([Dd][Aa][Tt][Ee]|[Yy][Ee][Aa][Rr])", 
-                       names(data), 
-                       value = T
-                   )],
-                   format = "%Y-%m-%d %hh:%mm:%ss"
-               )
-           }
+        
+        {#Printing date conversion message
+            message("Converting/Creating Date Class....")
+            
+            #Converting to Date
+            data[, grep("^([Dd][Aa][Tt][Ee]|[Yy][Ee][Aa][Rr])",names(data), value = T)] <- as.Date(
+                data[ ,grep(
+                    "^([Dd][Aa][Tt][Ee]|[Yy][Ee][Aa][Rr])", 
+                    names(data), 
+                    value = T
+                )],
+                format = "%Y-%m-%d %hh:%mm:%ss"
+            )
+        }
         ,
-           
-           #Print message if date class present
-           print("data is with date object")
+        
+        #Print message if date class present
+        print("data is with date object")
     )
     
-
+    
     #renaming date class column
     names(data)[grep("^([Dd][Aa][Tt][Ee]|[Yy][Ee][Aa][Rr])", names(data))] <- "Date"
     
@@ -116,7 +116,7 @@ proc <- function(station = ""){
             vec = vec
         )
         
-        #subtracting mean of later time period(>= 2015-01-01) from former(<= 2014-12-31)
+        #subtracting mean of former time period (<= 2014-12-31) from later (>= 2015-01-01)
         mean(
             subset(dt, Date >= "2015-01-01")[,2],
             na.rm = T
@@ -134,10 +134,10 @@ proc <- function(station = ""){
         data[ ,-grep(
             "Date", 
             names(data)
-            )],
+        )],
         sub_func
     )
-
+    
 }
 
 
