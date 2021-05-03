@@ -18,9 +18,9 @@ if(
     install.packages(
         setdiff(
             pkgs,
-            dependencies = TRUE,
-            installed.packages,
-        )
+            installed.packages()
+        ),
+        dependencies = TRUE
     )
 } else {
     
@@ -30,6 +30,7 @@ if(
         character.only = TRUE
     )
 }
+
 
 
 ##Snapshot of Packages To Ease Reproducibility:This logs the packages and package versions
