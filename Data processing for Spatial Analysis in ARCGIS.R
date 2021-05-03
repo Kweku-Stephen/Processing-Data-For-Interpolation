@@ -40,6 +40,8 @@ if(
 #)
 
 #Loading datasets
+#   imports all datasets meeting the regular expression "^[A-Za-z](.*)xlsx" from the working directory
+#Each dataset contains the columns: Date/Year, Prcp,Tmax and Tmin
 system.time(
     data <- grep(
         "^[A-Za-z](.*)xlsx", 
@@ -63,13 +65,19 @@ system.time(
 #)
 
 
-#Function for Data Prcessing
+#Function for Data Processing
+#Function takes a character(station name) of length 1 as input argument
 proc <- function(station = ""){
+    
+    #Conditional
+    if(class(station) != "character"){
+        stop("station must be a character")
+    }
     
     #Data
     data <- data[[station]]
     
-    #Conditional for checking class of time vector
+    #Conditional for checking class of time vector/component of data
     ifelse(
         class(
             data[, grep(
@@ -100,7 +108,7 @@ proc <- function(station = ""){
     )
     
     
-    #renaming date class column
+    #renaming date-class column
     names(data)[grep("^([Dd][Aa][Tt][Ee]|[Yy][Ee][Aa][Rr])", names(data))] <- "Date"
     
     #Subsetting observations from 1981 to 2050
@@ -130,7 +138,7 @@ proc <- function(station = ""){
     }  
     
     
-    #running sub_fun sequentially on an input dataframe
+    #running sub_fun sequentially on input dataframe
     sapply(
         data[ ,-grep(
             "Date", 
@@ -187,7 +195,7 @@ tasks <- list(
 #)
 #tasks[c(1,2,4)] <- grep("^[A-Za-z](.*)xlsx", dir(),value = T)[c(1,2,5)]
 
-#Running the function "proc" on the data in parallel
+#Running the function "proc" in parallel
 res <- clusterApply(
     cl,
     tasks,
