@@ -3,7 +3,7 @@ setwd("F:\\R_PROJECTS\\North_Climate_Github")
 
 #Required Packages
 pkgs <- c(
-    "parallel", "magrittr", "profmem", "rio"
+    "parallel", "tidyverse", "profmem", "rio"
 )
 
 
@@ -70,9 +70,9 @@ system.time(
 proc <- function(station = ""){
     
     #Conditional
-    if(class(station) != "character"){
-        stop("station must be a character")
-    }
+    #if(class(station) != "character"){
+    #    stop("station must be a character")
+    #
     
     #Data
     data <- data[[station]]
@@ -113,7 +113,7 @@ proc <- function(station = ""){
     
     #Subsetting observations from 1981 to 2050
     data <- data[
-        data[ ,"Date"] >= "1981-01-01" & data[ ,"Date"] <= "2050-12-31", 
+        data[ ,"Date"] >= "1980-01-01" & data[ ,"Date"] <= "2050-12-31", 
     ]
     
     #Averaging 
@@ -127,11 +127,11 @@ proc <- function(station = ""){
         
         #subtracting mean of former time period (<= 2014-12-31) from later (>= 2015-01-01)
         mean(
-            subset(dt, Date >= "2015-01-01")[,2],
+            subset(dt, Date >= "2020-01-01")[,2],
             na.rm = T
         ) - 
             mean(
-                subset(dt, Date <= "2014-12-31")[,2],
+                subset(dt, Date <= "2016-12-31")[,2],
                 na.rm = T
             ) %>% 
             return()
@@ -204,17 +204,25 @@ res <- clusterApply(
     do.call(
         rbind,
         .
-    )
+    ) #%>% 
+    #mutate(
+    #    .,
+    #    
+    #)
 
-#Renaming rows
-rownames(res) <- gsub(".xlsx","",grep("^[A-Za-z](.*)xlsx", dir(), value = T))
 
 #Stopiing Cluster to save resources
 stopCluster(cl)
 
+#Renaming rows
+rownames(res) <- gsub(".xlsx","",grep("^[A-Za-z](.*)xlsx", dir(), value = T))
+
+sts <- c("Bole","Navrongo","Tamale","Wa","Yendi")
+res <- dplyr::mutate(data.frame(res), Stations[Stations$station %in% sts, c("lon", "lat")])
+
+
 #Exporting to Excel
 export(res, "2_RCP85_FOR_INTER.xlsx", row.names = T)
-
 
 
 
