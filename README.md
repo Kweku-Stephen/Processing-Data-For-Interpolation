@@ -1,1 +1,2 @@
-# Processing-Data-For-Interpolation
+This project involves Computing the deviation of Obsserved Climate Data from the RCP26 and 85 projected Data for the meteorological Stations: Wa, Tamale, Bole, Navrongo and Yendi in Ghana. It looks at how both scenarios (RCP 26 and 85) diverge in the future. 
+Datasets involved do not reside in the same workind directory and therefore some scripts have their working directories stated atop of them.
