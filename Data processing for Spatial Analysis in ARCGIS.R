@@ -70,9 +70,9 @@ system.time(
 proc <- function(station = ""){
     
     #Conditional
-    #if(class(station) != "character"){
-    #    stop("station must be a character")
-    #
+    if(!is.character(station)){
+        stop("station must be a character")
+    }
     
     #Data
     data <- data[[station]]
@@ -150,6 +150,7 @@ proc <- function(station = ""){
 }
 
 
+
 ##Parallelizing Computation##
 
 #Detecting available Cores on PC
@@ -204,21 +205,28 @@ res <- clusterApply(
     do.call(
         rbind,
         .
-    ) #%>% 
-    #mutate(
-    #    .,
-    #    
-    #)
+    ) 
 
 
 #Stopiing Cluster to save resources
 stopCluster(cl)
 
 #Renaming rows
-rownames(res) <- gsub(".xlsx","",grep("^[A-Za-z](.*)xlsx", dir(), value = T))
+rownames(res) <- gsub(
+    ".xlsx",
+    "",
+    grep(
+        "^[A-Za-z](.*)xlsx",
+        dir(), 
+        value = T
+    )
+)
 
 sts <- c("Bole","Navrongo","Tamale","Wa","Yendi")
-res <- dplyr::mutate(data.frame(res), Stations[Stations$station %in% sts, c("lon", "lat")])
+res <- dplyr::mutate(
+    data.frame(res), 
+    Stations_observed[Stations_observed$station %in% sts, c("lon", "lat")]
+)
 
 
 #Exporting to Excel
